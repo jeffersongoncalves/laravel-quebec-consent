@@ -92,6 +92,13 @@ QuebecConsent::claim($anonymousId, $user);   // returns the records it created
 
 Calling `update()` or `delete()` on a `ConsentRecord` throws an exception. The one exception is the personal data columns (`ip_address`, `user_agent`): the records are declared with [laravel-quebec](https://github.com/jeffersongoncalves/laravel-quebec)'s `#[PersonalData]`, so you can still clear those columns with `$record->anonymizePersonalData()`.
 
+## Upgrading to 2.0
+
+2.0 runs on [laravel-privacy](https://github.com/jeffersongoncalves/laravel-privacy), the engine shared by the
+LGPD, GDPR, CCPA, US privacy and Quebec suites. The classes, config keys, tables, commands and events of this package
+keep their names: your code, config and data need no change. Suites installed side by side never see each other's
+events. If you extend a class of this package, it now inherits from its `JeffersonGoncalves\Privacy` base.
+
 ## Testing
 
 ```bash
