@@ -3,7 +3,8 @@
 namespace JeffersonGoncalves\QuebecConsent\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use JeffersonGoncalves\Privacy\Consent\Concerns\HasConsents as BaseHasConsents;
+use JeffersonGoncalves\Privacy\Consent\ConsentManager as BaseConsentManager;
 use JeffersonGoncalves\QuebecConsent\ConsentManager;
 use JeffersonGoncalves\QuebecConsent\Models\ConsentRecord;
 
@@ -12,32 +13,15 @@ use JeffersonGoncalves\QuebecConsent\Models\ConsentRecord;
  */
 trait HasConsents
 {
-    /**
-     * @return MorphMany<ConsentRecord, $this>
-     */
-    public function consents(): MorphMany
+    use BaseHasConsents;
+
+    protected static function consentManager(): BaseConsentManager
     {
-        return $this->morphMany(ConsentRecord::class, 'subject');
+        return app(ConsentManager::class);
     }
 
-    /**
-     * @param  array<string, mixed>  $metadata
-     */
-    public function grantConsent(string $purpose, ?string $version = null, ?string $source = null, array $metadata = []): ConsentRecord
+    protected static function consentRecordModel(): string
     {
-        return app(ConsentManager::class)->grant($this, $purpose, $version, $source, $metadata);
-    }
-
-    /**
-     * @param  array<string, mixed>  $metadata
-     */
-    public function revokeConsent(string $purpose, ?string $source = null, array $metadata = []): ConsentRecord
-    {
-        return app(ConsentManager::class)->revoke($this, $purpose, $source, $metadata);
-    }
-
-    public function hasConsent(string $purpose, ?string $version = null): bool
-    {
-        return app(ConsentManager::class)->has($this, $purpose, $version);
+        return ConsentRecord::class;
     }
 }
